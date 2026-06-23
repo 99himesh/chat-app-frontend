@@ -5,6 +5,7 @@ import heroImg from './assets/hero.png'
 import SignUpPage from './pages/SignUpPage'
 import { Route, Routes } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
+import ChatPage from './pages/ChatPage'
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
         {/* Auth  */}
         <Route path="/signUp" element={<SignUpPage />} />
         <Route path="/logIn" element={<LoginPage />} />
+        <Route path="/chat" element={<ChatPage />} />
         
       </Routes>
     </>
