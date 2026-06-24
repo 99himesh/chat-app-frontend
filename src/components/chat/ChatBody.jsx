@@ -1,35 +1,39 @@
 import { useEffect, useRef } from "react";
 import MessageBubble from "./MessageBubble";
+import { useDispatch, useSelector } from "react-redux";
+import { recieveMessageAsync } from "../../feature/messageSlice";
 
-const messages = [
-  {
-    id: 1,
-    own: false,
-    message: "Hey 👋",
-    time: "09:30 AM",
-  },
-  {
-    id: 2,
-    own: true,
-    message: "Hello!",
-    time: "09:31 AM",
-  },
-  {
-    id: 3,
-    own: false,
-    message: "How are you?",
-    time: "09:32 AM",
-  },
-  {
-    id: 4,
-    own: true,
-    message: "Doing great 😊",
-    time: "09:33 AM",
-  },
-];
 
-const ChatBody = () => {
+
+const ChatBody = ({recieverId}) => {
+  const {userId}=useSelector(state=>state.user)
   const bottomRef = useRef();
+  const dispatch=useDispatch();
+  const {message}=useSelector(state=>state.message)
+  console.log(recieverId,"vksfjkvbfhj");
+  
+
+  const getMessage=async()=>{
+    try {
+       const data={
+        senderId:userId,
+        recieverId:recieverId,
+      }
+      const res=await dispatch(recieveMessageAsync({data})).unwrap();
+      console.log(res);
+      
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  useEffect(()=>{
+    if(recieverId){
+    getMessage();
+
+    }
+  },[recieverId])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
@@ -40,8 +44,8 @@ const ChatBody = () => {
   return (
     <div className="flex-1 overflow-y-auto p-5 bg-[#efeae2]">
 
-      {messages.map((msg) => (
-        <MessageBubble key={msg.id} {...msg} />
+      {message.map((msg) => (
+        <MessageBubble key={msg.id} msg={msg} />
       ))}
 
       <div ref={bottomRef} />

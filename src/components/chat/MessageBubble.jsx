@@ -1,4 +1,9 @@
-const MessageBubble = ({ own, message, time }) => {
+import { useSelector } from "react-redux";
+import { formatTime } from "../../constants/constants";
+
+const MessageBubble = ({msg }) => {
+  const {userId}=useSelector(state=>state.user);
+  const own=msg.senderId==userId;
   return (
     <div
       className={`flex mb-3 ${
@@ -13,10 +18,10 @@ const MessageBubble = ({ own, message, time }) => {
             : "bg-white rounded-bl-sm"
         }`}
       >
-        <p>{message}</p>
+        <p>{msg.message}</p>
 
         <p className="text-[11px] text-gray-500 text-right mt-1">
-          {time}
+          {formatTime(msg.createdAt)}
         </p>
       </div>
     </div>

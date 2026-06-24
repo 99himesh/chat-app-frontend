@@ -3,9 +3,13 @@ import CustomButton from "../ui/CustomButton";
 import CustomInput from "../ui/CustomInput";
 import CustomText from "../ui/CustomText";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { signUpHandlerAsync } from "../../feature/userSlice";
 
 const SignUp=()=>{
+    const dispatch=useDispatch();
+    const navigate=useNavigate();
     const [singUpInput,setSignUpInput]=useState({
         name:"",
         email:"",
@@ -17,6 +21,26 @@ const SignUp=()=>{
         const {name,value}=e.target;
         setSignUpInput({...singUpInput,[name]:value});
 
+    }
+
+    const signUpHandler=async()=>{
+        console.log("dfjksbdjkb");
+        
+        try {
+            const data={
+              ...singUpInput
+            }
+            const res= await dispatch(signUpHandlerAsync({data})).unwrap();
+            console.log(res,"dfdskfugsk");
+            if(res.success){
+             navigate("/login")
+            }
+            
+            
+        } catch (error) {
+            console.log("error",error);
+            
+        }
     }
 
     return(
@@ -34,14 +58,14 @@ const SignUp=()=>{
                </div>
                <div className="flex flex-col gap-2">
                 <CustomText value={"Phone Number"}/>
-                <CustomInput name="text" value={singUpInput?.mobile} onchange={(e)=>{signInputUpHandler(e)}} className={"!w-[300px]"} />
+                <CustomInput name="mobile" value={singUpInput?.mobile} onchange={(e)=>{signInputUpHandler(e)}} className={"!w-[300px]"} />
                </div>
                <div className="flex flex-col gap-2">
                 <CustomText value={"Password"}/>
                 <CustomInput name="password" value={singUpInput?.password} onchange={(e)=>{signInputUpHandler(e)}} className={"!w-[300px]"} />
                </div>
                <div className="flex justify-center pt-3">
-                <CustomButton  value={"Sign Up"}/>
+                <CustomButton onclick={()=>{signUpHandler()}}  value={"Sign Up"}/>
                </div>
                 <div className="text-[#fff] flex justify-center">
                <Link to={"/logIn"}>have you already Account? Login</Link>

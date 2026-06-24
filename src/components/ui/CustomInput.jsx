@@ -14,7 +14,7 @@ const CustomInput = ({ onchange, placeholder, type,size,value ,name,className,ad
         placeholder={placeholder}
         value={value}
         className={`min-h-[40px] no-spinner ${className}`}
-        addonBefore={addonBefore}
+        // addonBefore={addonBefore}
         suffix={search && <SearchOutlined style={{ fontSize: "16px" }} />}
         />
 
