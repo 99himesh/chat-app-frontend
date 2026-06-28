@@ -47,7 +47,9 @@ export const messageSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
-   
+     messageHandler:(state,action)=>{
+      state.message=[...state.message,action.payload]
+     }
   },
   extraReducers: (builder) => {
     builder.addCase(sendMessageAsync.pending, (state) => {
@@ -80,3 +82,5 @@ export const messageSlice = createSlice({
   },
 });
 export default messageSlice.reducer;
+
+export const {messageHandler}=messageSlice.actions;

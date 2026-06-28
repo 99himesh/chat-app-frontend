@@ -4,34 +4,11 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sendMessageAsync } from "../../feature/messageSlice";
 
-const ChatInput = ({recieverId}) => {
-  const {userId}=useSelector(state=>state.user);
-  const dispatch=useDispatch();
-  const [chatInput,setChatInput]=useState({
-    message:""
-  })
-  const sendMessageHandler=async()=>{
-    try {
-      const data={
-        senderId:userId,
-        recieverId:recieverId,
-        message:chatInput
-      }
-      const res=await dispatch(sendMessageAsync({data})).unwrap();
-      console.log(res,"dvfhjdsfhjdfjh");
-      
-      if(res.success){
-        console.log("sdfsdf");
-        
-        setChatInput({...chatInput,message:""})
-      }
-      
-    } catch (error) {
-      console.log(error);
-      
-    }
-    
-  }
+
+const ChatInput = ({recieverId,setChatInput,chatInputs,sendMessage,socket,setSendMessage,sendMessageHandler}) => {
+
+
+
   return (
     <div className="border-t bg-white p-4">
 
@@ -41,12 +18,12 @@ const ChatInput = ({recieverId}) => {
           name="message"
           placeholder="Type a message..."
           size="large"
-          value={chatInput.message}
-          onChange={(e)=>{setChatInput(e.target.value)}}
+          value={chatInputs.message}
+          onChange={(e)=>{setChatInput({...chatInputs,message:e.target.value})}}
         />
 
         <Button
-        onClick={()=>{sendMessageHandler()}}
+          onClick={sendMessageHandler}
           type="primary"
           size="large"
           icon={<SendOutlined />}

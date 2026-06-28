@@ -18,7 +18,6 @@ const Sidebar = ({setRecieverId,recieverId}) => {
   const getUsers=async()=>{
     try {
       const res=await dispatch(getUserAsync({})).unwrap();
-      console.log(res);
       
       
     } catch (error) {

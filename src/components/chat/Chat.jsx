@@ -3,13 +3,41 @@ import ChatHeader from "./ChatHeader";
 import ChatBody from "./ChatBody";
 import ChatInput from "./ChatInput";
 import Cookies from "js-cookie"
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { messageHandler } from "../../feature/messageSlice";
+import { useDispatch } from "react-redux";
+import {io} from "socket.io-client"
 const Chat = () => {
+const socket=useMemo(()=>io("http://localhost:3000"),[]) 
+  const dispatch=useDispatch()
+  const [messages, setMessages] = useState([]);
+   const [chatInputs,setChatInput]=useState({
+    message:""
+   })
   const token=Cookies.get("token")
   const userId=Cookies.get("userId")
   const [recieverId,setRecieverId]=useState(null)
-  console.log(recieverId,"hnhg");
-  
+  const sendMessageHandler=()=>{
+    
+     socket.emit("message",chatInputs.message);
+      setChatInput({...chatInputs,message:""})
+  }
+  useEffect(()=>{
+      socket.on("connect",()=>{
+        console.log("connected",socket.id);      
+      });
+      socket.on("recieve-message",(s)=>{
+        console.log(s);
+        
+      })
+    return ()=>{
+      socket.disconnect();
+    }
+
+
+    
+    },[])
+   
   return (
     <div className="h-screen  p-6 relative overflow-hidden">
 
@@ -24,8 +52,8 @@ const Chat = () => {
 
         <div className="flex-1 flex flex-col">
           <ChatHeader />
-          <ChatBody recieverId={recieverId} />
-          <ChatInput recieverId={recieverId}/>
+          <ChatBody   recieverId={recieverId} />
+          <ChatInput sendMessageHandler={sendMessageHandler}   setChatInput={setChatInput} chatInputs={chatInputs} recieverId={recieverId}/>
         </div>
 
       </div>
