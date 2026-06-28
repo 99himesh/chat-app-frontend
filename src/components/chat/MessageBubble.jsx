@@ -5,6 +5,9 @@ const MessageBubble = ({msg }) => {
   const {userId}=useSelector(state=>state.user);
   const own=msg.senderId==userId;
   return (
+    <>
+    
+    
     <div
       className={`flex mb-3 ${
         own ? "justify-end" : "justify-start"
@@ -21,10 +24,13 @@ const MessageBubble = ({msg }) => {
         <p>{msg.message}</p>
 
         <p className="text-[11px] text-gray-500 text-right mt-1">
-          {formatTime(msg.createdAt)}
+          {/* {formatTime(msg.createdAt)} */}
+          {msg.userName}
         </p>
       </div>
     </div>
+    </>
+
   );
 };
 

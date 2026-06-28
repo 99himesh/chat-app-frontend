@@ -6,28 +6,36 @@ import Cookies from "js-cookie"
 import { useEffect, useMemo, useState } from "react";
 import { messageHandler } from "../../feature/messageSlice";
 import { useDispatch } from "react-redux";
-import {io} from "socket.io-client"
+import {io} from "socket.io-client";
 const Chat = () => {
-const socket=useMemo(()=>io("http://localhost:3000"),[]) 
+  const token=Cookies.get("token")
+console.log(token,"dsfsdfsd");
+
+const socket=useMemo(()=>io("http://localhost:3000",{
+  auth:{
+    token
+  }
+}) ,[])
   const dispatch=useDispatch()
   const [messages, setMessages] = useState([]);
    const [chatInputs,setChatInput]=useState({
     message:""
    })
-  const token=Cookies.get("token")
   const userId=Cookies.get("userId")
   const [recieverId,setRecieverId]=useState(null)
   const sendMessageHandler=()=>{
     
-     socket.emit("message",chatInputs.message);
+     socket.emit("message",{message:chatInputs.message,socket:socket.id});
       setChatInput({...chatInputs,message:""})
   }
   useEffect(()=>{
       socket.on("connect",()=>{
         console.log("connected",socket.id);      
       });
-      socket.on("recieve-message",(s)=>{
-        console.log(s);
+      socket.on("recieve-message",(msg)=>{
+        dispatch(messageHandler(msg))
+        console.log(msg,"dfbsdkjfgkj");
+        
         
       })
     return ()=>{
@@ -37,10 +45,11 @@ const socket=useMemo(()=>io("http://localhost:3000"),[])
 
     
     },[])
+
+
    
   return (
     <div className="h-screen  p-6 relative overflow-hidden">
-
       {/* Background Glow */}
       <div className="absolute top-20 left-1/4 w-80 h-80 bg-pink-500/20 blur-[180px] rounded-full" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-green-500/20 blur-[180px] rounded-full" />
