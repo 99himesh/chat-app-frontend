@@ -10,11 +10,20 @@ import { getUserAsync } from "../../feature/userSlice";
 
 
 
-const Sidebar = ({setRecieverId,recieverId}) => {
+const Sidebar = ({setRecieverId,recieverId,setRecieverMail,socket}) => {
   const {userId,user}=useSelector(state=>state.user);
-  const users=user.filter((item)=>item.id!=userId)
+  const users=user.filter((item)=>item.id!=userId);
   const dispatch=useDispatch();
   
+
+    const joinRoomHandler=(user)=>{
+      setRecieverId(user.id)
+      setRecieverMail(user.email)
+      socket.emit("join-room",user.email)
+    
+    }
+
+
   const getUsers=async()=>{
     try {
       const res=await dispatch(getUserAsync({})).unwrap();
@@ -26,6 +35,8 @@ const Sidebar = ({setRecieverId,recieverId}) => {
     }
   }
 
+
+   
   useEffect(()=>{ 
       getUsers()
   },[])
@@ -47,7 +58,7 @@ const Sidebar = ({setRecieverId,recieverId}) => {
 
         {users?.map((user) => (
           <div
-            onClick={()=>{setRecieverId(user.id)}}
+            onClick={()=>{joinRoomHandler(user)}}
             key={user.id}
             className={`flex items-center gap-3 p-3 rounded-2xl hover:bg-white/10 cursor-pointer transition mb-2 ${user.id==recieverId && "bg-white/10 " }`}
           >

@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 import {io} from "socket.io-client";
 const Chat = () => {
   const token=Cookies.get("token")
-console.log(token,"dsfsdfsd");
 
 const socket=useMemo(()=>io("http://localhost:3000",{
   auth:{
@@ -23,20 +22,21 @@ const socket=useMemo(()=>io("http://localhost:3000",{
    })
   const userId=Cookies.get("userId")
   const [recieverId,setRecieverId]=useState(null)
+  const [recieverMail,setRecieverMail]=useState("")
   const sendMessageHandler=()=>{
     
-     socket.emit("message",{message:chatInputs.message,socket:socket.id});
+     socket.emit("personal-message",{message:chatInputs.message,socket:socket.id,roomName:recieverMail});
       setChatInput({...chatInputs,message:""})
   }
+
+
+  
   useEffect(()=>{
       socket.on("connect",()=>{
         console.log("connected",socket.id);      
       });
-      socket.on("recieve-message",(msg)=>{
-        dispatch(messageHandler(msg))
-        console.log(msg,"dfbsdkjfgkj");
-        
-        
+      socket.on("personal-recieve-message",(msg)=>{   
+        dispatch(messageHandler(msg))          
       })
     return ()=>{
       socket.disconnect();
@@ -44,7 +44,7 @@ const socket=useMemo(()=>io("http://localhost:3000",{
 
 
     
-    },[])
+    },[recieverId])
 
 
    
@@ -57,7 +57,7 @@ const socket=useMemo(()=>io("http://localhost:3000",{
 
       <div className="relative h-full rounded-[30px] border border-white/10 bg-black/30 backdrop-blur-3xl overflow-hidden flex">
 
-        <Sidebar setRecieverId={setRecieverId} recieverId={recieverId}/>
+        <Sidebar socket={socket} setRecieverMail={setRecieverMail} setRecieverId={setRecieverId} recieverId={recieverId}/>
 
         <div className="flex-1 flex flex-col">
           <ChatHeader />
