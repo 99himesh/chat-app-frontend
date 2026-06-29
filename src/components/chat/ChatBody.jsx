@@ -9,6 +9,7 @@ const ChatBody = ({recieverId,socketId,socket}) => {
   const bottomRef = useRef();
   const {message}=useSelector(state=>state.message)
  
+  console.log(message);
   
   
 

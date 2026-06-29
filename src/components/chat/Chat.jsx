@@ -5,10 +5,12 @@ import ChatInput from "./ChatInput";
 import Cookies from "js-cookie"
 import { useEffect, useMemo, useState } from "react";
 import { messageHandler } from "../../feature/messageSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {io} from "socket.io-client";
 const Chat = () => {
   const token=Cookies.get("token")
+  const {userId,user}=useSelector(state=>state.user);
+console.log(userId,"vhvghjf");
 
 const socket=useMemo(()=>io("http://localhost:3000",{
   auth:{
@@ -20,12 +22,22 @@ const socket=useMemo(()=>io("http://localhost:3000",{
    const [chatInputs,setChatInput]=useState({
     message:""
    })
-  const userId=Cookies.get("userId")
+
   const [recieverId,setRecieverId]=useState(null)
-  const [recieverMail,setRecieverMail]=useState("")
+  const [recieverMail,setRecieverMail]=useState("");
+  const senderData=user.filter((item)=>item.id==userId);
+  
+   
+
+    // console.log(senderData[0].email);
+
+  console.log(recieverMail);
+  
   const sendMessageHandler=()=>{
     
-     socket.emit("personal-message",{message:chatInputs.message,socket:socket.id,roomName:recieverMail});
+    const roomName=[senderData[0].email,recieverMail].sort().join("-");
+    
+     socket.emit("personal-message",{message:chatInputs.message,socket:socket.id,roomName:roomName});
       setChatInput({...chatInputs,message:""})
   }
 
@@ -35,7 +47,9 @@ const socket=useMemo(()=>io("http://localhost:3000",{
       socket.on("connect",()=>{
         console.log("connected",socket.id);      
       });
-      socket.on("personal-recieve-message",(msg)=>{   
+      socket.on("personal-recieve-message",(msg)=>{ 
+      console.log(msg);
+      
         dispatch(messageHandler(msg))          
       })
     return ()=>{
@@ -44,7 +58,7 @@ const socket=useMemo(()=>io("http://localhost:3000",{
 
 
     
-    },[recieverId])
+    },[])
 
 
    

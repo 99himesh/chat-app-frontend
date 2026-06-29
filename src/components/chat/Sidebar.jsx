@@ -13,13 +13,15 @@ import { getUserAsync } from "../../feature/userSlice";
 const Sidebar = ({setRecieverId,recieverId,setRecieverMail,socket}) => {
   const {userId,user}=useSelector(state=>state.user);
   const users=user.filter((item)=>item.id!=userId);
+  const senderData=user.filter((item)=>item.id==userId);
   const dispatch=useDispatch();
   
 
     const joinRoomHandler=(user)=>{
       setRecieverId(user.id)
       setRecieverMail(user.email)
-      socket.emit("join-room",user.email)
+      const roomName=[senderData[0].email,user.email].sort().join("-")
+      socket.emit("join-room",roomName)
     
     }
 
