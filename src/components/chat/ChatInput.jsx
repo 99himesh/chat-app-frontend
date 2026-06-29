@@ -1,19 +1,37 @@
 import { Input, Button, message } from "antd";
-import { SendOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined, PlusOutlined, SendOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sendMessageAsync } from "../../feature/messageSlice";
 
 
-const ChatInput = ({recieverId,setChatInput,chatInputs,sendMessage,socket,setSendMessage,sendMessageHandler}) => {
+const ChatInput = ({recieverId,setChatInput,chatInputs,sendMessage,socket,setSendMessage,sendMessageHandler,sendMediaFilesHandler}) => {
 
 
 
   return (
     <div className="border-t bg-white p-4">
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 items-center ">
+        <div>
+            <label
+        htmlFor="file-upload"
+        style={{
+          cursor: "pointer",
+          fontSize: "24px",
+        }}
+      >
+        <PlusOutlined />
+      </label>
 
+      <input
+        id="file-upload"
+        type="file"
+        accept="image/*,video/*"
+        style={{ display: "none" }}
+        onChange={sendMediaFilesHandler}
+      />
+        </div>
         <Input
           name="message"
           placeholder="Type a message..."

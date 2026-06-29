@@ -4,20 +4,18 @@ import ChatBody from "./ChatBody";
 import ChatInput from "./ChatInput";
 import Cookies from "js-cookie"
 import { useEffect, useMemo, useState } from "react";
-import { messageHandler } from "../../feature/messageSlice";
+import { messageHandler, sendMediaFileAsync } from "../../feature/messageSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {io} from "socket.io-client";
 const Chat = () => {
   const token=Cookies.get("token")
   const {userId,user}=useSelector(state=>state.user);
-console.log(userId,"vhvghjf");
-
+  const dispatch=useDispatch()
 const socket=useMemo(()=>io("http://localhost:3000",{
   auth:{
     token
   }
 }) ,[])
-  const dispatch=useDispatch()
   const [messages, setMessages] = useState([]);
    const [chatInputs,setChatInput]=useState({
     message:""
@@ -31,13 +29,52 @@ const socket=useMemo(()=>io("http://localhost:3000",{
 
     // console.log(senderData[0].email);
 
-  console.log(recieverMail);
+ const sendMediaFilesHandler=async(e)=>{
+  const roomName=[senderData[0].email,recieverMail].sort().join("-");
+   try {
+  const file=e.target.files[0];
+  console.log(file);
   
-  const sendMessageHandler=()=>{
+  const fileType=file.type;
+  const formdata=new FormData()
+  formdata.append("file",file);
+
+ 
+    const res=await dispatch(sendMediaFileAsync({formdata})).unwrap();
+    console.log(res);
+    const messageData={
+      senderId:senderData[0].id,
+      recieverId:recieverId,
+      messageType:fileType,
+      media:res.url,
+      roomName:roomName,
+      socket:socket.id
+
+    }
+     socket.emit("personal-message",{messageData});
     
+    
+  } catch (error) {
+    console.log(error);
+    
+  }
+
+  
+ }
+  
+  const sendMessageHandler=()=>{  
+    if(!chatInputs.message)  return; 
     const roomName=[senderData[0].email,recieverMail].sort().join("-");
-    
-     socket.emit("personal-message",{message:chatInputs.message,socket:socket.id,roomName:roomName});
+     const messageData={
+      senderId:senderData[0].id,
+      recieverId:recieverId,
+      messageType:"text",
+      message:chatInputs.message,
+      roomName:roomName,
+      socket:socket.id
+
+    }
+     socket.emit("personal-message",{messageData});
       setChatInput({...chatInputs,message:""})
   }
 
@@ -76,7 +113,7 @@ const socket=useMemo(()=>io("http://localhost:3000",{
         <div className="flex-1 flex flex-col">
           <ChatHeader />
           <ChatBody   recieverId={recieverId} />
-          <ChatInput sendMessageHandler={sendMessageHandler}   setChatInput={setChatInput} chatInputs={chatInputs} recieverId={recieverId}/>
+          <ChatInput sendMediaFilesHandler={sendMediaFilesHandler} sendMessageHandler={sendMessageHandler}   setChatInput={setChatInput} chatInputs={chatInputs} recieverId={recieverId}/>
         </div>
 
       </div>

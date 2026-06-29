@@ -9,7 +9,7 @@ const ChatBody = ({recieverId,socketId,socket}) => {
   const bottomRef = useRef();
   const {message}=useSelector(state=>state.message)
  
-  console.log(message);
+  console.log(message,"dfkjdsfjkgsdj");
   
   
 
@@ -23,7 +23,7 @@ const ChatBody = ({recieverId,socketId,socket}) => {
     <div className="flex-1 overflow-y-auto p-5 bg-[#efeae2]">
 
       {message?.map((msg) => (
-        <MessageBubble key={msg.id} msg={msg} />
+        <MessageBubble key={msg.messageData.id} msg={msg.messageData} />
       ))}
 
       <div ref={bottomRef} />

@@ -42,6 +42,21 @@ export const recieveMessageAsync = createAsyncThunk(
     }
   }
 );
+export const sendMediaFileAsync = createAsyncThunk(
+  "message/mediaAsync",
+  async ({formdata}) => {    
+    try {
+      const res = await api.post("message/media",formdata,{
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      });      
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
 
 export const messageSlice = createSlice({
   name: "messages",
@@ -76,6 +91,17 @@ export const messageSlice = createSlice({
       state.isLoading = false;
       state.error = action.error.message;
     });
+    builder.addCase(sendMediaFileAsync.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(sendMediaFileAsync.fulfilled, (state, action) => {
+      state.isLoading = false; 
+    });
+    builder.addCase(sendMediaFileAsync.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    });
+    
    
    
    
