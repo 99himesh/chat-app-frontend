@@ -3,9 +3,9 @@ import CustomButton from "../ui/CustomButton";
 import CustomInput from "../ui/CustomInput";
 import CustomText from "../ui/CustomText";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { signUpHandlerAsync } from "../../feature/userSlice";
+import { useNavigate,Link } from "react-router-dom";
 
 const SignUp=()=>{
     const dispatch=useDispatch();
@@ -24,7 +24,6 @@ const SignUp=()=>{
     }
 
     const signUpHandler=async()=>{
-        console.log("dfjksbdjkb");
         
         try {
             const data={

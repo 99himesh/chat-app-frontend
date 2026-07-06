@@ -8,12 +8,12 @@ import { Provider } from 'react-redux'
 import { store } from './store/store.js'
 createRoot(document.getElementById('root')).render(
   // <StrictMode>
-     <BrowserRouter>
-     <ConfigProvider theme={{ token: { colorPrimary: "#9D6638" } }}>
+    <ConfigProvider theme={{ token: { colorPrimary: "#9D6638" } }}>
       <Provider store={store}>
+       <BrowserRouter>
        <App />
+       </BrowserRouter>
        </Provider>
        </ConfigProvider>
-    </BrowserRouter>
-  // </StrictMode>,
+  //  </StrictMode>,
 )

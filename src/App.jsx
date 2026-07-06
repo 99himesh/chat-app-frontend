@@ -6,16 +6,24 @@ import SignUpPage from './pages/SignUpPage'
 import { Route, Routes } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import ChatPage from './pages/ChatPage'
+import Protected from './components/protected/protected'
+import ProfilePage from './pages/ProfilePage'
 
 function App() {
 
   return (
     <>
-      <Routes>
+      <Routes >
         {/* Auth  */}
         <Route path="/signUp" element={<SignUpPage />} />
         <Route path="/logIn" element={<LoginPage />} />
-        <Route path="/chat" element={<ChatPage />} />
+        <Route path="*" element={<LoginPage />} />
+
+
+        <Route path="/chat" element={<Protected><ChatPage /></Protected>} />
+        <Route path="/profile" element={<Protected><ProfilePage /></Protected>} />
+        
+        <Route path="*" element={<Protected><ChatPage /></Protected>} />
         
       </Routes>
     </>

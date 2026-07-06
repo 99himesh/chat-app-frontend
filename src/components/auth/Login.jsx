@@ -3,7 +3,7 @@ import CustomButton from "../ui/CustomButton";
 import CustomInput from "../ui/CustomInput";
 import CustomText from "../ui/CustomText";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { loginHandlerAsync } from "../../feature/userSlice";
 import { useDispatch } from "react-redux";
 const Login=()=>{
@@ -48,7 +48,7 @@ const Login=()=>{
               <div className="flex flex-col gap-4">
                 <CustomText className={"!text-[30px] text-center"} value={"Login"}/>
                <div className="flex flex-col gap-2">
-                <CustomText value={"Email"}/>
+                <CustomText value={"Email/Mobile"}/>
                 <CustomInput name="emailAndMobile" value={loginInput?.emailAndMobile} onchange={(e)=>{loginInputUpHandler(e)}} className={"!w-[300px]"} />
                </div>
                <div className="flex flex-col gap-2">
@@ -61,9 +61,7 @@ const Login=()=>{
                <div className="text-[#fff] flex justify-center">
                <Link to={"/signUp"}>Dont have Account? Sign Up</Link>
                </div>
-               <div className="text-[#fff] flex justify-center">
-               <Link to={"/forget-password"}>Forget Password ?</Link>
-               </div>
+               
                
          </div>
          </div>

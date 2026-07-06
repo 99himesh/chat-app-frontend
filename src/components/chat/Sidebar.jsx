@@ -8,27 +8,41 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserAsync } from "../../feature/userSlice";
 
-
-
-const Sidebar = ({setRecieverId,recieverId,setRecieverMail,socket}) => {
-  const {userId,user}=useSelector(state=>state.user);
-  const users=user.filter((item)=>item.id!=userId);
-  const senderData=user.filter((item)=>item.id==userId);
-  const dispatch=useDispatch();
+import Cookies from "js-cookie"
+import {useNavigate} from "react-router-dom"
+import { useState } from "react";
+const Sidebar = ({socket,setRecieverId,recieverId,setSelectedUser}) => {
+  const {userId,user,profile}=useSelector(state=>state.user);
+  console.log(user,"user");
   
+  const users=user?.filter((item)=>item.id!=userId);
+  const senderData=user?.filter((item)=>item.id==userId);
+  const [searchInput,setSearchInput]=useState("")
+  const dispatch=useDispatch();
+  const navigate=useNavigate()
+  const recieverEmail=Cookies.get("email")
 
+  
+  const senderMail=Cookies.get("senderMail")
+  ;
+  
     const joinRoomHandler=(user)=>{
       setRecieverId(user.id)
-      setRecieverMail(user.email)
-      const roomName=[senderData[0].email,user.email].sort().join("-")
-      socket.emit("join-room",roomName)
+      setSelectedUser(user)
+      Cookies.set("recieverMail",user.email)
+      const roomName=[senderData[0].email || senderMail,user.email ].sort().join("-");
+      console.log(roomName,"roomNamehvhg");
+      
+      socket.emit("join",roomName)
     
     }
+    
 
 
   const getUsers=async()=>{
     try {
-      const res=await dispatch(getUserAsync({})).unwrap();
+      const data={search:searchInput}
+      const res=await dispatch(getUserAsync({data})).unwrap();
       
       
     } catch (error) {
@@ -37,21 +51,24 @@ const Sidebar = ({setRecieverId,recieverId,setRecieverMail,socket}) => {
     }
   }
 
-
+const logOutHandler=()=>{
+  Cookies.remove("token");
+   navigate("/login")
+}
    
   useEffect(()=>{ 
       getUsers()
-  },[])
+  },[searchInput])
   return (
-    <div className="w-[340px] bg-[#562F00] backdrop-blur-xl border-r border-white/10 flex flex-col  overflow-auto">
+    <div className="w-[340px] h-[100vh] bg-[#562F00] backdrop-blur-xl border-r border-white/10 flex flex-col  overflow-auto">
 
       {/* Header */}
-      <div className="p-4 border-b border-white/10">
+      <div className="w-[90%] mx-auto">
         <Input
-          size="large"
           placeholder="Search..."
           prefix={<SearchOutlined />}
-          className="mt-5 rounded-xl"
+          className="my-5 w-[80%] h-10  rounded-xl"
+          onChange={(e)=>{setSearchInput(e.target.value)}}
         />
       </div>
 
@@ -65,49 +82,37 @@ const Sidebar = ({setRecieverId,recieverId,setRecieverMail,socket}) => {
             className={`flex items-center gap-3 p-3 rounded-2xl hover:bg-white/10 cursor-pointer transition mb-2 ${user.id==recieverId && "bg-white/10 " }`}
           >
             <Badge
-              dot={user.online}
               offset={[-5, 38]}
               color="#22c55e"
             >
-              <Avatar size={55}>
-                {user.name.charAt(0)}
+              <Avatar src={user.profile && user.profile} size={55}>
+                {!user.profile && user.name.charAt(0).toUpperCase()}
               </Avatar>
             </Badge>
 
             <div className="flex-1 min-w-0">
               <h4 className="text-white font-semibold truncate">
-                {user.name}
+                {user.name.slice(0,1).toUpperCase()}{user.name.slice(1)}
               </h4>
 
-              <p className="text-gray-400 text-sm truncate">
-                {/* {user.lastMessage} */}
-                dsvsd
-              </p>
-            </div>
-
-            <div className="flex flex-col items-end gap-2">
-              <span className="text-xs text-gray-400">
-                  {"15min"}
-                
-              </span>
-
              
-                <div className="h-5 w-5 rounded-full bg-green-500 text-white text-xs flex items-center justify-center">
-                  {/* {user.unread} */}
-                  ds
-                </div>
             </div>
+
+          
           </div>
         ))}
 
       </div>
 
       {/* Footer */}
-      <div className="border-t border-white/10 p-4 flex justify-around">
+      <div className="border-t border-white/10 p-4 flex justify-center gap-5 items-center ">
 
-        <button className="text-gray-400 hover:text-red-400 text-2xl">
+        <button onClick={()=>{logOutHandler()}} className="text-gray-400 hover:text-red-400 text-2xl">
           <LogoutOutlined />
         </button>
+        <div className="cursor-pointer" onClick={()=>{navigate("/profile")}}>
+          <Avatar  src={profile.profile} size={28}/>
+        </div>
 
       </div>
 

@@ -2,16 +2,23 @@ import { Input, Button, message } from "antd";
 import { PlusCircleOutlined, PlusOutlined, SendOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sendMessageAsync } from "../../feature/messageSlice";
+import { predectiveMessageAsync, sendMessageAsync } from "../../feature/messageSlice";
+import debounce from "../../constants/debouncing";
+import { useEffect } from "react";
+import { useMemo } from "react";
 
 
-const ChatInput = ({recieverId,setChatInput,chatInputs,sendMessage,socket,setSendMessage,sendMessageHandler,sendMediaFilesHandler}) => {
+const ChatInput = ({setChatInput,chatInputs,sendMessage,socket,setSendMessage,sendMessageHandler,sendMediaFilesHandler}) => {
 
+ 
 
+const chatInputHandler=(e)=>{
+    setChatInput({...chatInputs,message:e.target.value});
+}
 
   return (
-    <div className="border-t bg-white p-4">
-
+    <div className="bg-white py-4 px-10">
+      
       <div className="flex gap-3 items-center ">
         <div>
             <label
@@ -37,7 +44,7 @@ const ChatInput = ({recieverId,setChatInput,chatInputs,sendMessage,socket,setSen
           placeholder="Type a message..."
           size="large"
           value={chatInputs.message}
-          onChange={(e)=>{setChatInput({...chatInputs,message:e.target.value})}}
+          onChange={(e)=>{chatInputHandler(e)}}
         />
 
         <Button
