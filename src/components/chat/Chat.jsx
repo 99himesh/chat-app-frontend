@@ -59,7 +59,8 @@ const Chat = () => {
         messageType: fileType,
         media: res.url
       }
-      socket.emit("personal-message", { messageData, roomName });
+    const localTime = new Date().toLocaleString();
+      socket.emit("personal-message", { messageData, roomName ,createdAt: localTime });
 
 
     } catch (error) {
@@ -121,6 +122,10 @@ const Chat = () => {
       console.log("connected", socket.id);
     });
 
+    socket.on("online-users", (users) => {
+       console.log(users);
+       
+      });
 
     socket.on("personal-recieve-message", (msg) => {
       dispatch(messageHandler(msg))
@@ -131,9 +136,6 @@ const Chat = () => {
       socket.off("connect");
       socket.off("connect_error");
     }
-
-
-
   }, [])
 
   useEffect(() => {
@@ -152,13 +154,6 @@ const Chat = () => {
 
     debouncePredective(chatInputs.message);
   }, [chatInputs.message]);
-
-
-
-
-
-
-
 
 
   useEffect(() => {
