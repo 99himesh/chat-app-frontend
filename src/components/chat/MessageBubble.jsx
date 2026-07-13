@@ -27,16 +27,28 @@ const MessageBubble = ({ msg }) => {
 
 
         </div>}
-        {msg.messageType == "image/png" || msg.messageType == "image/jpeg" || msg.messageType=="image/webp"  && <div
+        {
+       ( msg.messageType == "image/jpeg" ||
+        msg.messageType == "image/png" ||
+        msg.messageType == "image/webp"||
+        msg.messageType == "image/gif" ||
+        msg.messageType == "image/bmp" ||
+        msg.messageType == "image/svg+xml" ||
+        msg.messageType == "image/tiff" ||
+        msg.messageType == "image/x-icon" ||
+        msg.messageType == "image/avif" ||
+        msg.messageType == "image/heic" ||
+        msg.messageType == "image/heif")
+           && <div
           className={` max-w-[70%] rounded-xl px-4 py-2 
         `}
         >
          
           {isLoading   ? <Skeleton.Image active={"active"} style={{ width: 160, height: 160 }} /> :  
           <Image 
-          className="!h-[150px] w-full" src={msg.media} 
+          className="!h-[150px] rounded-xl w-full" src={msg.media} 
           />}
-          <p className="text-[12px]">{formatTime(msg.createdAt)}</p>
+          {/* <p className="text-[12px]">{formatTime(msg.createdAt)}</p> */}
 
 
 
@@ -45,12 +57,16 @@ const MessageBubble = ({ msg }) => {
           className={` max-w-[70%] rounded-xl  px-4 py-2 !rounded-xl
         `}
         >
-          {isLoading ? <Skeleton.Image active={"active"} style={{ width: 160, height: 160 }} /> : <video
+          {isLoading ? <Skeleton.Image active={"active"} style={{ width: 160, height: 160 }} /> : 
+          <video
             src={msg.media}
             controls
             width={255}
             height={100}
+            className="rounded-xl"
           />}
+          {/* <p className="text-[12px]">{formatTime(msg.createdAt)}</p> */}
+
         </div>}
       </div>
     </>
